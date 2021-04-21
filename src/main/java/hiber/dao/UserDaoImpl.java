@@ -13,12 +13,12 @@ public class UserDaoImpl implements  UserDAO{
 
     @Override
     public void add(User user) {
-
+        manager.persist(user);
     }
 
     @Override
-    public List<User> getUsers() {
-        return null;
+    public List<User> getAllUsers() {
+        return manager.createQuery("from User").getResultList();
     }
 
     @Override

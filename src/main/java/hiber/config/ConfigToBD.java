@@ -12,17 +12,21 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import web.model.User;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
 @PropertySource("classpath:db.properties")
-@EnableTransactionManagement
 @ComponentScan(value = "hiber")
 public class ConfigToBD {
 
     @Autowired
     private Environment environment;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Bean
     public DataSource getDataSource() {
@@ -35,21 +39,7 @@ public class ConfigToBD {
     }
 
     @Bean
-    public LocalSessionFactoryBean getSessionFactory() {
-        LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
-        localSessionFactoryBean.setDataSource(getDataSource());
-        Properties properties = new Properties();
-        properties.put("hibernate.hbm2dll.auto", environment.getProperty("hibernate.hbm2dll.auto"));
-
-        localSessionFactoryBean.setHibernateProperties(properties);
-        localSessionFactoryBean.setAnnotatedClasses(User.class);
-        return localSessionFactoryBean;
-    }
-
-    @Bean
-    public HibernateTransactionManager getTransactionManager() {
-        HibernateTransactionManager manager = new HibernateTransactionManager();
-        manager.setSessionFactory(getSessionFactory().getObject());
-        return manager;
+    public EntityManager entityManager(){
+        return entityManager;
     }
 }
